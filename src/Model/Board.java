@@ -48,7 +48,7 @@ public class Board {
 
     private Cell cell(int i, int j) {
         return new Cell() {
-            private ChangeListener listener;
+            private CellOpenListener listener;
 
             @Override
             public boolean isMine() {
@@ -109,8 +109,8 @@ public class Board {
             }
 
             @Override
-            public void addChangeListener(ChangeListener changeListener) {
-                this.listener = changeListener;
+            public void addCellOpenListener(CellOpenListener CellOpenListener) {
+                this.listener = CellOpenListener;
             }
         };
     }

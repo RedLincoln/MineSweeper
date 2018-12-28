@@ -9,11 +9,11 @@ public interface Cell {
 
     int countMinesAround();
 
-    interface ChangeListener{
+    interface CellOpenListener{
         void execute();
     }
 
-    void addChangeListener(ChangeListener changeListener);
+    void addCellOpenListener(CellOpenListener CellOpenListener);
 
 
 }
