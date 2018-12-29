@@ -2,28 +2,22 @@ package View;
 
 import Model.Board;
 import Model.Cell;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
 
 public class BoardDisplay extends JPanel {
     private Board board;
 
-    public BoardDisplay(Board board) throws IOException {
+    public BoardDisplay(Board board){
         this.board = board;
         this.setLayout(new GridLayout(board.getRows(), board.getCols()));
         createButtons();
     }
 
-    private void createButtons() throws IOException {
+    private void createButtons(){
         for (int i = 0; i < board.getRows(); i++)
             for (int j = 0; j < board.getCols(); j++)
                 this.add(button(i, j));
@@ -66,7 +60,7 @@ public class BoardDisplay extends JPanel {
 
 
 
-    private JButton button(int i, int j) throws IOException {
+    private JButton button(int i, int j){
         Cell cell = board.cellAt(i, j);
         JButton button = button(cell);
         button.setFocusable(false);
@@ -80,9 +74,14 @@ public class BoardDisplay extends JPanel {
         return button;
     }
 
-
-
-    private JButton button (Cell cell) throws IOException {
+    private JButton button (Cell cell){
         return new Button(cell);
+    }
+
+    public void reset() {
+        this.removeAll();
+        createButtons();
+        this.revalidate();
+        this.repaint();
     }
 }

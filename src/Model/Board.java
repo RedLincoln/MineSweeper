@@ -8,6 +8,7 @@ public class Board {
     private Set<Integer> openedCells;
     private final Level level;
     private final Random random = new Random();
+    private GameCompletedListener gameCompletedListener;
 
     public Board(Level level) {
         this.level = level;
@@ -54,22 +55,30 @@ public class Board {
             @Override
             public void open() {
                 if (openedCells == null) addMines(i, j);
-                if (openedCells.contains(index(i, j))) return;
-                this.listener.execute();
-                openedCells.add(index(i, j));
-                if ( countMinesAround() > 0) return;
-                openNeighbors();
-            }
-
-            private void openNeighbors() {
-                List<Cell> neighbors =  neighbors();
-                for (Cell cell : neighbors) {
-                    cell.open();
+                if (isMine())
+                    gameOver();
+                else {
+                    openCellNeighbors();
+                    if (mines.size() + openedCells.size() == cells.size())
+                        gameWon();
                 }
             }
 
+            public void openCellNeighbors() {
+                if (openedCells.contains(index(i, j))) return;
+                this.disable();
+                if (this.countMinesAround() != 0) return;
+                for ( Cell cell: this.neighbors())
+                    cell.openCellNeighbors();
+            }
+
+            @Override
+            public void disable() {
+                listener.execute();
+                openedCells.add(index(i, j));
+            }
+
             public int countMinesAround(){
-                if (isMine()) return -1;
                 List<Cell> neighbors =  neighbors();
                 int count = 0;
                 for (Cell cell : neighbors) {
@@ -105,10 +114,27 @@ public class Board {
             }
 
             @Override
-            public void addCellOpenListener(CellOpenListener CellOpenListener) {
-                this.listener = CellOpenListener;
+            public void addCellOpenListener(CellOpenListener cellOpenListener) {
+                this.listener = cellOpenListener;
             }
+
         };
+    }
+
+    private void disableAllCells(){
+        for (Cell cell: cells ) {
+            cell.disable();
+        }
+    }
+
+    private void gameWon() {
+        disableAllCells();
+        gameCompletedListener.execute(true);
+    }
+
+    private void gameOver(){
+        disableAllCells();
+        gameCompletedListener.execute(false);
     }
 
     private void addMines(int i, int j){
@@ -121,4 +147,17 @@ public class Board {
         }
     }
 
+    public void reset() {
+        mines = null;
+        openedCells = null;
+        createBoard();
+    }
+
+    public interface GameCompletedListener{
+        void execute(boolean state);
+    }
+
+    public void addGameCompletedListener(GameCompletedListener gameCompletedListener){
+        this.gameCompletedListener = gameCompletedListener;
+    }
 }
