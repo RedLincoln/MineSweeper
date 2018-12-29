@@ -6,30 +6,26 @@ public class Board {
     private List<Cell> cells;
     private Set<Integer> mines;
     private Set<Integer> openedCells;
-    private int rows;
-    private int cols;
-    private int nMines;
+    private final Level level;
     private final Random random = new Random();
 
-    public Board(int rows, int cols, int nMines) {
-        this.rows = rows;
-        this.cols = cols;
-        this.nMines = nMines;
+    public Board(Level level) {
+        this.level = level;
         createBoard();
     }
 
     public int getRows() {
-        return rows;
+        return level.getRows();
     }
 
     public int getCols() {
-        return cols;
+        return level.getCols();
     }
 
     private void createBoard() {
         cells = new ArrayList<>();
-        for (int i = 0; i < rows; i++)
-            for (int j = 0; j < cols; j++)
+        for (int i = 0; i < level.getRows(); i++)
+            for (int j = 0; j < level.getCols(); j++)
                 cells.add(cell(i,j));
     }
 
@@ -38,11 +34,11 @@ public class Board {
     }
 
     private boolean outOfBounds(int i, int j) {
-        return (i < 0) || (i >= rows) || (j < 0) || (j >= cols);
+        return (i < 0) || (i >= level.getRows()) || (j < 0) || (j >= level.getCols());
     }
 
     private Integer index(int i, int j) {
-        return (!outOfBounds(i, j)) ? (i * cols + j) : null;
+        return (!outOfBounds(i, j)) ? (i * level.getCols() + j) : null;
     }
 
 
@@ -118,8 +114,8 @@ public class Board {
     private void addMines(int i, int j){
         mines =  new HashSet<>();
         openedCells =  new HashSet<>();
-        while (mines.size() < nMines){
-            int value =  random.nextInt(rows*cols);
+        while (mines.size() < level.getMines()){
+            int value =  random.nextInt(level.getCols()*level.getRows());
             if (value == index(i,j))continue;
             mines.add(value);
         }

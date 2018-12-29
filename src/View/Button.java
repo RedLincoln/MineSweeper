@@ -13,10 +13,15 @@ public class Button extends JButton {
     private final BufferedImage mine = ImageIO.read(new File("Icons/mine.png"));
 
     private Cell cell;
-    private ImageIcon[] image = {null
-            ,new ImageIcon(getClass().getResource("Icons/flag.png"))
-            ,new ImageIcon(getClass().getResource("Icons/question.png"))};
+    private static final ImageIcon[] icons = new ImageIcon[3];
     private int index = 0;
+
+    static{
+        icons[0] = null;
+        icons[1] = new ImageIcon(Button.class.getResource("Icons/flag.png"));
+        icons[2] = new ImageIcon(Button.class.getResource("Icons/question.png"));
+    }
+
 
     public Button(Cell cell) throws IOException {
         this.cell = cell;
@@ -24,7 +29,7 @@ public class Button extends JButton {
 
     public ImageIcon getNext(){
         index = (index + 1) % 3;
-        return image[index];
+        return icons[index];
     }
 
     private Image scaleTobutton(Image image, JButton button){
